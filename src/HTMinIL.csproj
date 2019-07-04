@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<AssemblyName>HTMinIL</AssemblyName>
+		<PackageId>HTMinIL</PackageId>
+		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Mono.Cecil" Version="0.10.4" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="16.0.461" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.0.461" />
+	</ItemGroup>
+
+	<UsingTask TaskName="HTMinILTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(SdkDir)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<TargetDLL ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Code Type="Class" Language="cs" Source="HTMinILTask.cs" />
+		</Task>
+	</UsingTask>
+
+</Project>
