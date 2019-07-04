@@ -14,13 +14,4 @@
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.0.461" />
 	</ItemGroup>
 
-	<UsingTask TaskName="HTMinILTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(SdkDir)\Microsoft.Build.Tasks.Core.dll">
-		<ParameterGroup>
-			<TargetDLL ParameterType="System.String" Required="true" />
-		</ParameterGroup>
-		<Task>
-			<Code Type="Class" Language="cs" Source="HTMinILTask.cs" />
-		</Task>
-	</UsingTask>
-
 </Project>

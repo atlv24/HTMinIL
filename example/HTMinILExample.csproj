@@ -10,12 +10,7 @@
 		<MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\src\HTMinIL.csproj">
-			<Name>HTMinIL</Name>
-			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-		</ProjectReference>
-	</ItemGroup>
+	<Import Project="..\src\HTMinIL.targets" />
 
 	<Target Name="HTMinIL" AfterTargets="Build">
 		<HTMinILTask TargetDLL="bin\Debug\netcoreapp3.0\HTMinIL.Example.Views.dll" />
