@@ -2,22 +2,22 @@
 
 	<ItemGroup>
 		<Reference Include="Microsoft.Build.Framework">
-			<HintPath>$(SdkDir)/Microsoft.Build.Framework.dll</HintPath>
+			<HintPath>$(SdkDir)Microsoft.Build.Framework.dll</HintPath>
 		</Reference>
 		<Reference Include="Microsoft.Build.Utilities">
-			<HintPath>$(SdkDir)/Microsoft.Build.Utilities.Core.dll</HintPath>
+			<HintPath>$(SdkDir)Microsoft.Build.Utilities.Core.dll</HintPath>
 		</Reference>
 		<Reference Include="Mono.Cecil">
-			<HintPath>$(NuGetPackageRoot)/mono.cecil/0.10.4/lib/net40/Mono.Cecil.dll</HintPath>
+			<HintPath>$(NuGetPackageRoot)mono.cecil\0.10.4\lib\net40\Mono.Cecil.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
-	<UsingTask TaskName="HTMinILTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(SdkDir)/Microsoft.Build.Tasks.Core.dll">
+	<UsingTask TaskName="HTMinILTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(SdkDir)Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<TargetDLL ParameterType="System.String" Required="true" />
 		</ParameterGroup>
 		<Task>
-			<Code Type="Class" Language="cs" Source="../src/HTMinILTask.cs" />
+			<Code Type="Class" Language="cs" Source="$(CsDir)HTMinILTask.cs" />
 		</Task>
 	</UsingTask>
 
