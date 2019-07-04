@@ -1,12 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjDir>$(SolutionDir)</ProjDir>
-        <ProjDir Condition="!HasTrailingSlash('$(ProjDir)')">$(ProjDir)\</ProjDir>
 
         <CsDir>$(SolutionDir)src</CsDir>
-        <CsDir Condition="!HasTrailingSlash('$(CsDir)')">$(CsDir)\</CsDir>
 
         <SdkDir>$(MSBuildExtensionsPath)</SdkDir>
-        <SdkDir Condition="!HasTrailingSlash('$(SdkDir)')">$(SdkDir)\</SdkDir>
+
+        <PackageDir>$(NuGetPackageRoot)</PackageDir>
     </PropertyGroup>
 </Project>
