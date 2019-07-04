@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<Target Name="HTMinIL" AfterTargets="Build">
-		<HTMinILTask TargetDLL="bin\Debug\netcoreapp3.0\OrchardCore.Forums.Views.dll" />
+		<HTMinILTask TargetDLL="bin\Debug\netcoreapp3.0\HTMinIL.Example.Views.dll" />
 	</Target>
 
 	<ItemGroup>
