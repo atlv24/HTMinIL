@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
@@ -60,51 +61,68 @@ public class HTMinILTask : Task
 				ulong totalCharactersOutput = 0;
 				ulong eliminatedFunctions = 0;
 
+				List<Instruction> toBeRemoved = new List<Instruction>();
+
 				foreach (TypeDefinition type in viewModDef.Types)
 				{
-					foreach (MethodDefinition method in type.Methods)
+					foreach (TypeDefinition nestedType in type.NestedTypes)
 					{
-						if (method.Name != "ExecuteAsync") continue;
-						ILProcessor ilp = method.Body.GetILProcessor();
-						foreach (Instruction op in method.Body.Instructions)
+						if (!nestedType.Name.Contains("ExecuteAsync")) continue;
+						foreach (MethodDefinition method in nestedType.Methods)
 						{
-							// find IL code like:
-							// IL_xx: ldstr "\n                </td>\n                <td>\n                    <h2>"
-							// IL_xx: callvirt instance void [Microsoft.AspNetCore.Mvc.Razor]Microsoft.AspNetCore.Mvc.Razor.RazorPageBase::WriteLiteral(string)
+							ILProcessor ilp = method.Body.GetILProcessor();
 
-							if (op.OpCode.Code == Code.Ldstr
-							 && op.Operand is string html
-							 && op.Next != null
-							 && op.Next.OpCode.Code == Code.Callvirt
-							 && op.Next.Operand is MethodReference calledMethod
-							 && calledMethod.Name == "WriteLiteral")
+							foreach (Instruction op in method.Body.Instructions)
 							{
-								string htminil = Minify(html);
-								totalCharactersInput += (ulong) html.Length;
-								totalCharactersOutput += (ulong) htminil.Length;
+								// find IL code like:
+								// IL_xx: ldstr "\n                </td>\n                <td>\n                    <h2>"
+								// IL_xx: callvirt instance void [Microsoft.AspNetCore.Mvc.Razor]Microsoft.AspNetCore.Mvc.Razor.RazorPageBase::WriteLiteral(string)
 
-								op.Operand = htminil;
-
-								if (htminil == "")
+								if (op.OpCode.Code == Code.Ldstr
+								&& op.Operand is string html
+								&& op.Next != null
+								&& op.Next.OpCode.Code == Code.Callvirt
+								&& op.Next.Operand is MethodReference calledMethod
+								&& calledMethod.Name == "WriteLiteral")
 								{
-									eliminatedFunctions++;
-									// TODO: remove call completely
+									string htminil = Minify(html);
+									totalCharactersInput += (ulong) html.Length;
+									totalCharactersOutput += (ulong) htminil.Length;
+
+									op.Operand = htminil;
+									if (htminil == "")
+									{
+										eliminatedFunctions++;
+
+										toBeRemoved.Add(op.Previous);
+										toBeRemoved.Add(op.Next);
+										toBeRemoved.Add(op);
+									}
 								}
 							}
+
+							foreach (Instruction op in toBeRemoved)
+							{
+								ilp.Remove(op);
+							}
+							toBeRemoved.Clear();
 						}
 					}
 				}
 
-				viewAsmDef.Write(TargetDLL);
+				viewAsmDef.Write(TargetDLL + ".temp");
+				File.Delete(TargetDLL + ".old");
+				File.Move(TargetDLL, TargetDLL + ".old");
+				File.Move(TargetDLL + ".temp", TargetDLL);
 
-				double reduction = totalCharactersOutput / (double) totalCharactersInput;
-				Log.LogMessage("HTMinIL Completed. Reduction: " + String.Format("Value: {0:P2}.", reduction) + " Eliminated Calls: " + eliminatedFunctions);
+				double reduction = 1.0 - totalCharactersOutput / (double) totalCharactersInput;
+				Log.LogWarning("HTMinIL Completed. Reduction: {0:P2} Eliminated Calls: {1}", reduction, eliminatedFunctions);
 			}
 			success = true;
 		}
 		catch (Exception e)
 		{
-			Log.LogError("HTMinIL Error: " + e.Message);
+			Log.LogError("HTMinIL Error: " + e);
 			success = false;
 		}
 
