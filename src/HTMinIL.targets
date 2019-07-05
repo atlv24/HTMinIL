@@ -12,13 +12,4 @@
 		</Reference>
 	</ItemGroup>
 
-	<UsingTask TaskName="HTMinILTask" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(SdkDir)Microsoft.Build.Tasks.Core.dll">
-		<ParameterGroup>
-			<TargetDLL ParameterType="System.String" Required="true" />
-		</ParameterGroup>
-		<Task>
-			<Code Type="Class" Language="cs" Source="$(CsDir)HTMinILTask.cs" />
-		</Task>
-	</UsingTask>
-
 </Project>

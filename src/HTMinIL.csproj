@@ -8,10 +8,11 @@
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Mono.Cecil" Version="0.10.4" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="16.0.461" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.0.461" />
-	</ItemGroup>
+	<Import Project="$(ProjDir)src\HTMinIL.targets" />
+
+	<Target Name="VeryClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)\bin" />
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)\obj" />
+	</Target>
 
 </Project>
