@@ -47,7 +47,7 @@ public class HTMinILTask : Task
 		{
 			if (!File.Exists(TargetDLL))
 			{
-				throw new FileNotFoundException("Target DLL does not exist.");
+				throw new FileNotFoundException(TargetDLL + " does not exist.");
 			}
 			DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
 

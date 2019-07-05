@@ -22,11 +22,12 @@
 	</ItemGroup>
 
 	<Import Project="$(ProjDir)src\HTMinIL.targets" />
-	
+
 	<UsingTask TaskName="HTMinILTask" AssemblyFile="$(ProjDir)src\bin\$(Configuration)\$(TargetFramework)\HTMinIL.dll" />
 
 	<Target Name="HTMinIL" AfterTargets="Build">
-		<HTMinILTask TargetDLL="$(MSBuildThisFileDirectory)bin\(Configuration)\$(TargetFramework)\HTMinIL.Example.Views.dll" />
+		<HTMinILTask TargetDLL="$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\HTMinIL.Example.Views.dll" />
+		<Exec Command="ps aux |grep dotnet |grep -v grep |awk '{ print $2 }' |xargs kill -kill" />
 	</Target>
 
 	<Target Name="VeryClean" AfterTargets="Clean">
