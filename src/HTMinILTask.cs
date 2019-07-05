@@ -60,6 +60,7 @@ public class HTMinILTask : Task
 				ulong totalCharactersInput = 0;
 				ulong totalCharactersOutput = 0;
 				ulong eliminatedFunctions = 0;
+				ulong processedFiles = 0;
 
 				List<Instruction> toBeRemoved = new List<Instruction>();
 
@@ -68,6 +69,7 @@ public class HTMinILTask : Task
 					foreach (TypeDefinition nestedType in type.NestedTypes)
 					{
 						if (!nestedType.Name.Contains("ExecuteAsync")) continue;
+						processedFiles++;
 						foreach (MethodDefinition method in nestedType.Methods)
 						{
 							ILProcessor ilp = method.Body.GetILProcessor();
@@ -116,7 +118,7 @@ public class HTMinILTask : Task
 				File.Move(TargetDLL + ".temp", TargetDLL);
 
 				double reduction = 1.0 - totalCharactersOutput / (double) totalCharactersInput;
-				Log.LogWarning("HTMinIL Completed. Reduction: {0:P2} Eliminated Calls: {1}", reduction, eliminatedFunctions);
+				Log.LogWarning("HTMinIL Completed.\nReduction: {0}\nEliminated Calls: {1}\nProcessed Files: {2}", string.Format("{0:P2}", reduction), eliminatedFunctions, processedFiles);
 			}
 			success = true;
 		}
