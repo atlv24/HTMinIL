@@ -10,14 +10,28 @@
 		<MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
 	</PropertyGroup>
 
-	<Import Project="$(CsDir)HTMinIL.targets" />
-
-	<Target Name="HTMinIL" AfterTargets="Build">
-		<HTMinILTask TargetDLL="bin\Debug\netcoreapp3.0\HTMinIL.Example.Views.dll" />
-	</Target>
-
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(ProjDir)src\HTMinIL.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<Import Project="$(ProjDir)src\HTMinIL.targets" />
+	
+	<UsingTask TaskName="HTMinILTask" AssemblyFile="$(ProjDir)src\bin\$(Configuration)\$(TargetFramework)\HTMinIL.dll" />
+
+	<Target Name="HTMinIL" AfterTargets="Build">
+		<HTMinILTask TargetDLL="$(MSBuildThisFileDirectory)bin\(Configuration)\$(TargetFramework)\HTMinIL.Example.Views.dll" />
+	</Target>
+
+	<Target Name="VeryClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)\bin" />
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)\obj" />
+	</Target>
 
 </Project>

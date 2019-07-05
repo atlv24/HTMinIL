@@ -9,13 +9,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\HTMinIL.csproj" />
+		<ProjectReference Include="$(ProjDir)src\HTMinIL.csproj">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+		</ProjectReference>
 	</ItemGroup>
+
+	<Import Project="$(ProjDir)src\HTMinIL.targets" />
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 	</ItemGroup>
+
+	<Target Name="VeryClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)\bin" />
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)\obj" />
+	</Target>
 
 </Project>
