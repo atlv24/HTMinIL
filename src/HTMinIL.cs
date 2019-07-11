@@ -101,11 +101,16 @@ public class HTMinIL
 
 	public string Minify(string html)
 	{
+		// Replaces multiple whitespaces with a single space. "<div>    \n<p>" => "<div> <p>"
 		html = flattenSpaces.Replace(html, " ");
+		// Removes spaces between HTML tags. "<div> <p>" => "<div><p>"
 		html = collapseBracket.Replace(html, "");
+		// Removes the space before the tag self closer. "<br />" => "<br/>"
 		html = selfClosingSpace.Replace(html, "");
+		// Removes HTML comments that are not IE conditionals. "<div><!-- comment --><p>" => "<div><p>"
 		html = htmlComments.Replace(html, "");
 
+		// Removes single-space printing.
 		if (html == " ") return "";
 
 		return html;
