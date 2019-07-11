@@ -4,43 +4,46 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Mono.Cecil;
 
-public class HTMinILTask : Task
+namespace RivalRebels.Web
 {
-	[Required]
-	public string TargetDLL { get; set; }
-
-	public override bool Execute()
+	public class HTMinILTask : Task
 	{
-		bool success = false;
-		try
+		[Required]
+		public string TargetDLL { get; set; }
+
+		public override bool Execute()
 		{
-			if (!File.Exists(TargetDLL))
+			bool success = false;
+			try
 			{
-				throw new FileNotFoundException(TargetDLL + " does not exist.");
-			}
-			DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
+				if (!File.Exists(TargetDLL))
+				{
+					throw new FileNotFoundException(TargetDLL + " does not exist.");
+				}
+				DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
 
-			ReaderParameters readParams = new ReaderParameters { AssemblyResolver = assemblyResolver };
-			using (AssemblyDefinition asmDef = AssemblyDefinition.ReadAssembly(TargetDLL, readParams))
+				ReaderParameters readParams = new ReaderParameters { AssemblyResolver = assemblyResolver };
+				using (AssemblyDefinition asmDef = AssemblyDefinition.ReadAssembly(TargetDLL, readParams))
+				{
+					HTMinIL htminil = new HTMinIL();
+					htminil.ProcessAssembly(asmDef);
+
+					asmDef.Write(TargetDLL + ".temp");
+					File.Delete(TargetDLL + ".old");
+					File.Move(TargetDLL, TargetDLL + ".old");
+					File.Move(TargetDLL + ".temp", TargetDLL);
+
+					Log.LogWarning(htminil.GetStatistics());
+				}
+				success = true;
+			}
+			catch (Exception e)
 			{
-				HTMinIL htminil = new HTMinIL();
-				htminil.ProcessAssembly(asmDef);
-
-				asmDef.Write(TargetDLL + ".temp");
-				File.Delete(TargetDLL + ".old");
-				File.Move(TargetDLL, TargetDLL + ".old");
-				File.Move(TargetDLL + ".temp", TargetDLL);
-
-				Log.LogWarning(htminil.GetStatistics());
+				Log.LogError("HTMinIL Error: " + e);
+				success = false;
 			}
-			success = true;
-		}
-		catch (Exception e)
-		{
-			Log.LogError("HTMinIL Error: " + e);
-			success = false;
-		}
 
-		return success;
+			return success;
+		}
 	}
 }
