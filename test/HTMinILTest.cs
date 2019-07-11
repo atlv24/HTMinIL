@@ -5,7 +5,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyRemovesWhitespaceStrings()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("", h.Minify(""));
 		Assert.Equal("", h.Minify(" "));
@@ -20,7 +20,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyDoesNotJoinWords()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("word ", h.Minify("word "));
 		Assert.Equal(" word", h.Minify(" word"));
@@ -38,7 +38,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyDoesNotJoinNumbers()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("123 ", h.Minify("123 "));
 		Assert.Equal(" 123", h.Minify(" 123"));
@@ -56,7 +56,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyJoinsAngularBrackets()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("><", h.Minify("> <"));
 		Assert.Equal("<", h.Minify(" <"));
@@ -69,7 +69,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyShortensSelfClosingTags()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("<br/>", h.Minify("<br />"));
 	}
@@ -77,7 +77,7 @@ public class HTMinILTest
 	[Fact (Skip = "Not implemented yet.")]
 	public void MinifyEliminatesSpacesBetweenTagAttributeEqualSigns()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("<a href=\"http://example.com/\"/>", h.Minify("<a href= \"http://example.com/\"/>"));
 		Assert.Equal("<a href=\"http://example.com/\"/>", h.Minify("<a href =\"http://example.com/\"/>"));
@@ -87,7 +87,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyDoesNotEliminatesSpacesAroundEqualSigns()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("href= \"http://example.com/\"", h.Minify("href= \"http://example.com/\""));
 		Assert.Equal("href =\"http://example.com/\"", h.Minify("href =\"http://example.com/\""));
@@ -97,7 +97,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyEliminatesHTMLComments()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("", h.Minify("<!-- -->"));
 		Assert.Equal("", h.Minify("<!--An HTML Comment-->"));
@@ -108,7 +108,7 @@ public class HTMinILTest
 	[Fact]
 	public void MinifyDoesNotEliminateIEConditionalComments()
 	{
-		HTMinILTask h = new HTMinILTask();
+		HTMinIL h = new HTMinIL();
 
 		Assert.Equal("<!--[if IE]><![endif]-->", h.Minify("<!--[if IE]><![endif]-->"));
 		Assert.Equal("<!--[if IE]>Preserved<![endif]-->", h.Minify("<!--[if IE]>Preserved<![endif]-->"));
