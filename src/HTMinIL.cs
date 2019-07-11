@@ -53,7 +53,7 @@ public class HTMinIL
 
 		foreach (Instruction op in method.Body.Instructions)
 		{
-			// find IL code like:
+			// Find IL code like:
 			// IL_xx: ldstr "\n                </td>\n                <td>\n                    <h2>"
 			// IL_xx: callvirt instance void [Microsoft.AspNetCore.Mvc.Razor]Microsoft.AspNetCore.Mvc.Razor.RazorPageBase::WriteLiteral(string)
 
@@ -64,26 +64,38 @@ public class HTMinIL
 			 && op.Next.Operand is MethodReference calledMethod
 			 && calledMethod.Name == "WriteLiteral")
 			{
+				// Minify the string.
 				string htminil = Minify(html);
-				totalCharactersInput += (ulong)html.Length;
-				totalCharactersOutput += (ulong)htminil.Length;
 
+				// Keep track of the reduction for statistics.
+				totalCharactersInput += (ulong) html.Length;
+				totalCharactersOutput += (ulong) htminil.Length;
+
+				// Replace the original string with the minified string.
 				op.Operand = htminil;
+
+				// If the call is now empty, queue the instructions for removal.
 				if (htminil == "")
 				{
+					// Keep track of how many WriteLiteral calls we've removed for statistics.
 					eliminatedFunctions++;
 
+					// Remove ldarg.0
 					toBeRemoved.Add(op.Previous);
-					toBeRemoved.Add(op.Next);
+					// Remove ldstr
 					toBeRemoved.Add(op);
+					// Remove callvirt
+					toBeRemoved.Add(op.Next);
 				}
 			}
 		}
 
+		// Remove all the queued instructions.
 		foreach (Instruction op in toBeRemoved)
 		{
 			ilp.Remove(op);
 		}
+		// Clear the instruction list for the next use.
 		toBeRemoved.Clear();
 	}
 
